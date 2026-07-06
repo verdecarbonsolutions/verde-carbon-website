@@ -1,0 +1,36 @@
+backend:
+  name: github
+  repo: verdecarbonsolutions/verde-carbon-website
+  branch: main
+  base_url: https://verde-carbon-auth.verdecarbonsolutions.com
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "projects"
+    label: "Projects"
+    folder: "_projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Project Name", name: "title", widget: "string" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Hectares", name: "hectares", widget: "number" }
+      - { label: "Species", name: "species", widget: "string" }
+      - { label: "Status", name: "status", widget: "select", options: ["Active", "Completed", "Pipeline"] }
+      - { label: "Cover Photo", name: "cover", widget: "image", required: false }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "insights"
+    label: "Insights / Blog"
+    folder: "_insights"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["Carbon Markets", "CSR & ESG", "Field Notes", "Case Studies"] }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Summary", name: "summary", widget: "string" }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Body", name: "body", widget: "markdown" }
