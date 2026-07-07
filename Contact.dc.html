@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   </script>
 
 <script>
-// Web3Forms integration — injected separately from Claude Design bundle
+// Web3Forms integration - injected separately from Claude Design bundle
 document.addEventListener('DOMContentLoaded', function() {
   // Poll until the Send button renders (Claude Design renders async)
   var attempts = 0;
@@ -215,11 +215,29 @@ document.addEventListener('DOMContentLoaded', function() {
         e.stopImmediatePropagation();
         var inputs = document.querySelectorAll('input, textarea, select');
         var data = { access_key: '08bf08fe-1347-4af0-91fd-f1cd67ea79a6', subject: 'New enquiry from verdecarbonsolutions.com' };
+        // Map each field to a clean, human-readable label instead of using
+        // the placeholder text (which produced garbled email headings).
+        function labelFor(el) {
+          if (el.tagName === 'SELECT') return 'Reaching out as';
+          if (el.tagName === 'TEXTAREA') return 'Message';
+          if (el.type === 'email') return 'Email';
+          var p = (el.placeholder || '').toLowerCase();
+          if (p.indexOf('full name') !== -1) return 'Name';
+          if (p.indexOf('company') !== -1 || p.indexOf('ngo') !== -1 || p.indexOf('farm') !== -1) return 'Organization';
+          return null;
+        }
         inputs.forEach(function(el) {
-          if (el.placeholder && el.value) {
-            var key = el.placeholder.toLowerCase().replace(/[^a-z]/g, '_').replace(/_+/g,'_').replace(/^_|_$/g,'');
-            data[key] = el.value;
+          var label = labelFor(el);
+          if (!label) return;
+          var value;
+          if (el.tagName === 'SELECT') {
+            // Send the readable option text, not the internal value ("corporate")
+            var opt = el.options[el.selectedIndex];
+            value = opt ? opt.text : el.value;
+          } else {
+            value = el.value;
           }
+          if (value) data[label] = value;
         });
         btn.disabled = true;
         btn.textContent = 'Sending...';
